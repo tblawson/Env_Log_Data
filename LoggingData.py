@@ -19,7 +19,7 @@ QUANT_LONG_ALIAS = {'T': 'Temperature',
                     'Po': 'Power'}
 
 
-class Measurement:
+class Measurement(object):
     """
     A class to capture a single timestamped reading of a quantity.
     """
@@ -63,7 +63,7 @@ class Measurement:
                            raw=False)
 
 
-class Calibration:
+class Calibration(object):
     """
     Encapsulate calibration info.
     """
@@ -79,7 +79,7 @@ class Calibration:
         self.correction = {'factor': factor, 'offset': offset}
 
 
-class DataReading:
+class DataReading(object):
     """
     A class to encapsulate 'smart' raw readings from a sensor instrument.
 
@@ -136,10 +136,6 @@ class DataReading:
 
     def readline_from_calibration_table(self, equip, quant, cor_type, date):
         """
-        Read 1 line FROM 'Calibrations'table ORDERED BY column'Cal_Date' DESC, WHERE
-        column'Equip_No'=equip AND column'Parameter'=quant AND
-        column'Correction_Type'='cor_type' AND column'Date'<date
-
         Return line as a dict where column headings are the keys.
 
         Example lines:
@@ -150,7 +146,12 @@ class DataReading:
         |3     |2/03/2020|1       |595      |Rel Humidity|factor          |1      |0     |inf|
         |4     |2/03/2020|1       |595      |Rel Humidity|offset          |2.52   |0.11  |21 |
         """
+        query1 = "Read 1 line FROM 'Calibrations'table ORDERED BY column'Cal_Date' DESC WHERE"
+        query2 = "column'Equip_No'={} AND column'Parameter'={} AND".format(equip, quant)
+        query3 = "column'Correction_Type'={} AND column'Date'<{}]".format(cor_type, date)
+        query = query1 + query2 + query3
         line = {}  # default dict
+        print(query)  # Placeholder for database query...
         return line
 
     def get_correction(self, meas):
